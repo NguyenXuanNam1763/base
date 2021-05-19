@@ -5,6 +5,7 @@
 
 package com.no.aka.baseprojectkotlin.view.ui.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,7 @@ import com.no.aka.baseprojectkotlin.model.ProductSale
 import com.no.aka.baseprojectkotlin.model.User
 import com.no.aka.baseprojectkotlin.repository.HomeRepository
 import kotlinx.coroutines.launch
+import java.util.*
 
 class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel() {
     private val usersMutableList = MutableLiveData<List<User>>()
@@ -25,41 +27,41 @@ class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel(
     val productsLiveData: LiveData<List<ProductSale>>
         get() = productMutableList
 
-    private val timeObservable = MutableLiveData<Int>()
-    val timeLiveData: LiveData<Int>
-        get() = timeObservable
+    private val itemChangeMutable = MutableLiveData<Int>()
+    val itemChange: LiveData<Int>
+        get() = itemChangeMutable
 
     fun fetchProducts() {
-        viewModelScope.launch {
+//        viewModelScope.launch {
 //                .suspendOnSuccess {
 //                    Log.i("namnx", "fetchProducts: ${data?.size}")
 //                }
 
-            val products = homeRepository.getProducts()
-            if (products.isSuccessful) {
-                productMutableList.value = products.body()
+        val products = homeRepository.getProducts()
+//            if (products.isSuccessful) {
+        productMutableList.value = products
                 initCountDownTime()
-                return@launch
-            }
-
-
-        }
+//                return@launch
+//            }
+//
+//
+//        }
     }
 
     private fun initCountDownTime() {
         homeRepository.countDownTime {
+
             val value = productMutableList.value
+            val list = mutableListOf<ProductSale>()
             value?.forEachIndexed(action = { index, productSale ->
-                if (productSale.timeSale!! > 1000) {
-                    productSale.timeSale = productSale.timeSale!! - 1000
-                } else {
-                    productSale.timeSale = 0
+                val timeCurrent = System.currentTimeMillis()
+                if (productSale.timeSale!! - timeCurrent > 1000) {
+                    list.add(productSale)
                 }
             })
-            value?.let {
-                productMutableList.value = it
-            }
-            timeObservable.value = 1
+
+            productMutableList.value = list ?: emptyList()
+
         }
     }
 
