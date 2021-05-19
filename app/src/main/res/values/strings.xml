@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BaseProjectKotlin</string>
+    <string name="price">%d vnd</string>
+    <string name="time">%d milis</string>
 </resources>

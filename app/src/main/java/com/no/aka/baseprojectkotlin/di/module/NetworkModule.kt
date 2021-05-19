@@ -7,6 +7,7 @@ package com.no.aka.baseprojectkotlin.di.module
 
 import com.no.aka.baseprojectkotlin.network.ApiService
 import com.no.aka.baseprojectkotlin.network.RequestInterceptor
+import com.skydoves.sandwich.coroutines.CoroutinesResponseCallAdapterFactory
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -23,8 +24,10 @@ val networkModule = module {
     single {
         Retrofit.Builder()
             .client(get<OkHttpClient>())
-            .baseUrl("https://5e510330f2c0d300147c034c.mockapi.io/")
+//            .baseUrl("https://5e510330f2c0d300147c034c.mockapi.io/")
+            .baseUrl("https://raw.githubusercontent.com/NguyenXuanNam1763/base/master/")
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutinesResponseCallAdapterFactory())
             .build()
     }
 
