@@ -31,7 +31,7 @@ class ProductAdapter : BaseAdapter() {
 
         private fun drawUI() {
             binding.apply {
-                tvTime.text = TimeUtils.formatsMilliSeconds(productSale?.timeSale!!)
+                tvTime.text = TimeUtils.formatMillisecondToDay(productSale?.timeSale!!)
                 product = productSale
             }
         }

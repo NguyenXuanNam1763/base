@@ -5,18 +5,21 @@
 
 package com.no.aka.baseprojectkotlin.repository
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import com.google.gson.Gson
 import com.no.aka.baseprojectkotlin.base.BaseRepository
 import com.no.aka.baseprojectkotlin.database.UserDao
 import com.no.aka.baseprojectkotlin.model.ProductSale
 import com.no.aka.baseprojectkotlin.model.User
 import com.no.aka.baseprojectkotlin.network.ApiService
-import com.skydoves.sandwich.ApiResponse
+import org.json.JSONArray
 import retrofit2.Response
 
-class HomeRepository(private val userDao: UserDao, private val apiService: ApiService) :
-    BaseRepository() {
+class HomeRepository(private val context: Context, private val userDao: UserDao, private val apiService: ApiService) :
+        BaseRepository() {
 
     private var handler: Handler? = null
     private var runnable: Runnable? = null
@@ -25,8 +28,19 @@ class HomeRepository(private val userDao: UserDao, private val apiService: ApiSe
         return this.apiService.getUsers()
     }
 
-    suspend fun getProducts(): Response<List<ProductSale>> {
-        return this.apiService.getProductSale()
+    fun getProducts(): List<ProductSale> {
+        val fileInString: String =
+                context.assets.open("test.json").bufferedReader().use { it.readText() }
+        val jsonArray = JSONArray(fileInString)
+        val gson = Gson()
+        val productSales = mutableListOf<ProductSale>()
+        for (i in 0 until jsonArray.length()) {
+            val productSale = gson.fromJson(jsonArray[i].toString(), ProductSale::class.java)
+            productSales.add(productSale)
+        }
+
+        return productSales
+//        return this.apiService.getProductSale()
     }
 
     fun countDownTime(onNextTime: () -> Unit) {
