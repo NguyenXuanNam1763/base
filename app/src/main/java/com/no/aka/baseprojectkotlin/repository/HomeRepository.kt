@@ -18,6 +18,9 @@ import retrofit2.Response
 class HomeRepository(private val userDao: UserDao, private val apiService: ApiService) :
     BaseRepository() {
 
+    private var handler: Handler? = null
+    private var runnable: Runnable? = null
+
     suspend fun getUsers(): Response<List<User>> {
         return this.apiService.getUsers()
     }
@@ -27,16 +30,21 @@ class HomeRepository(private val userDao: UserDao, private val apiService: ApiSe
     }
 
     fun countDownTime(onNextTime: () -> Unit) {
-        val handler: Handler = Handler(Looper.getMainLooper())
+        this.handler = Handler(Looper.getMainLooper())
 
-        val runnable = object : Runnable {
+        this.runnable = object : Runnable {
             override fun run() {
                 onNextTime()
-                handler.postDelayed(this, 1000)
+                handler?.postDelayed(this, 1000)
             }
         }
 
-        handler.post(runnable)
+        this.handler?.post(this.runnable as Runnable)
+    }
+
+
+    fun destroy() {
+        this.runnable?.let { this.handler?.removeCallbacks(it) }
     }
 
 }

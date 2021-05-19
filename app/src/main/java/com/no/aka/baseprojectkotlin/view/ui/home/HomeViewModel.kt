@@ -5,7 +5,6 @@
 
 package com.no.aka.baseprojectkotlin.view.ui.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -13,8 +12,6 @@ import com.no.aka.baseprojectkotlin.base.BaseViewModel
 import com.no.aka.baseprojectkotlin.model.ProductSale
 import com.no.aka.baseprojectkotlin.model.User
 import com.no.aka.baseprojectkotlin.repository.HomeRepository
-import com.skydoves.sandwich.suspendOnError
-import com.skydoves.sandwich.suspendOnSuccess
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel() {
@@ -45,7 +42,6 @@ class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel(
                 return@launch
             }
 
-            Log.i("namnx", "fetchProducts: ${products.errorBody()}")
 
         }
     }
@@ -56,7 +52,8 @@ class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel(
             value?.forEachIndexed(action = { index, productSale ->
                 if (productSale.timeSale!! > 1000) {
                     productSale.timeSale = productSale.timeSale!! - 1000
-
+                } else {
+                    productSale.timeSale = 0
                 }
             })
             value?.let {
@@ -66,5 +63,10 @@ class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel(
         }
     }
 
+
+    override fun onCleared() {
+        this.homeRepository.destroy()
+        super.onCleared()
+    }
 
 }
