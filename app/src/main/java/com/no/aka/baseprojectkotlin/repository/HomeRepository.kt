@@ -18,11 +18,16 @@ import com.no.aka.baseprojectkotlin.network.ApiService
 import org.json.JSONArray
 import retrofit2.Response
 
-class HomeRepository(private val context: Context, private val userDao: UserDao, private val apiService: ApiService) :
-        BaseRepository() {
+class HomeRepository(
+    private val context: Context,
+    private val userDao: UserDao,
+    private val apiService: ApiService
+) :
+    BaseRepository() {
 
     private var handler: Handler? = null
     private var runnable: Runnable? = null
+    private var listProduct = mutableListOf<ProductSale>()
 
     suspend fun getUsers(): Response<List<User>> {
         return this.apiService.getUsers()
@@ -30,7 +35,7 @@ class HomeRepository(private val context: Context, private val userDao: UserDao,
 
     fun getProducts(): List<ProductSale> {
         val fileInString: String =
-                context.assets.open("test.json").bufferedReader().use { it.readText() }
+            context.assets.open("test.json").bufferedReader().use { it.readText() }
         val jsonArray = JSONArray(fileInString)
         val gson = Gson()
         val productSales = mutableListOf<ProductSale>()
@@ -38,8 +43,9 @@ class HomeRepository(private val context: Context, private val userDao: UserDao,
             val productSale = gson.fromJson(jsonArray[i].toString(), ProductSale::class.java)
             productSales.add(productSale)
         }
+        this.listProduct = productSales
 
-        return productSales
+        return this.listProduct.subList(0, 10)
 //        return this.apiService.getProductSale()
     }
 
@@ -54,6 +60,19 @@ class HomeRepository(private val context: Context, private val userDao: UserDao,
         }
 
         this.handler?.post(this.runnable as Runnable)
+    }
+
+    fun loadMore(sizeCurrent: Int): List<ProductSale> {
+        if (sizeCurrent >= this.listProduct.size) {
+            return emptyList()
+        }
+
+        val sizeLast = sizeCurrent + 10
+        if (sizeLast > this.listProduct.size) {
+            return this.listProduct.subList(sizeCurrent, this.listProduct.size - 1)
+        }
+
+        return this.listProduct.subList(sizeCurrent, sizeLast)
     }
 
 
