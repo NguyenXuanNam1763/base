@@ -25,3 +25,5 @@ Dữ liệu tạm thời tạo 1 danh sách chuỗi Json rồi dùng Gson parse 
 - Bắt buộc phải dùng RecyclerView: Nó đượuc tối ưu hóa loadmore. Cho phép chỉ hoạt động khi item được show lên màn hình. Các phần tử bị ẩn sẽ không chiếm rất ít dung lượng ram.
 - Glide cho phép chúng ta load ảnh. có thể điều chỉnh chất lượng ảnh nếu bạn muốn.
 - Sử dụng live data để trách trường hợp crash do ko tìm thấy id trên UI 
+
+- Tích hợp loadmore cho recyclerview. mỗi lần 10 item mới 
