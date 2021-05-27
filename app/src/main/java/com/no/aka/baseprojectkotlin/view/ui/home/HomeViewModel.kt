@@ -23,6 +23,10 @@ class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel(
             return usersMutableList
         }
 
+    private val productSaleMutaLive: MutableLiveData<List<ProductSale>> = MutableLiveData()
+    val productSaveLive: LiveData<List<ProductSale>>
+        get() = productSaleMutaLive
+
     private val productMutableList = MutableLiveData<List<ProductSale>>()
     val productsLiveData: LiveData<List<ProductSale>>
         get() = productMutableList
@@ -40,7 +44,7 @@ class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel(
         val products = homeRepository.getProducts()
 //            if (products.isSuccessful) {
         productMutableList.value = products
-                initCountDownTime()
+        initCountDownTime()
 //                return@launch
 //            }
 //
@@ -65,6 +69,10 @@ class HomeViewModel(private val homeRepository: HomeRepository) : BaseViewModel(
         }
     }
 
+    fun loadMore(sizeCurrent: Int) {
+        val loadMore = this.homeRepository.loadMore(sizeCurrent)
+        this.productSaleMutaLive.value = loadMore
+    }
 
     override fun onCleared() {
         this.homeRepository.destroy()

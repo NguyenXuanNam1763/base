@@ -8,6 +8,7 @@ package com.no.aka.baseprojectkotlin.view.ui.adapter
 import android.view.View
 import com.no.aka.baseprojectkotlin.R
 import com.no.aka.baseprojectkotlin.databinding.ViewItemUserBinding
+import com.no.aka.baseprojectkotlin.model.ObjectActivity
 import com.no.aka.baseprojectkotlin.model.User
 import com.skydoves.baserecyclerviewadapter.BaseAdapter
 import com.skydoves.baserecyclerviewadapter.BaseViewHolder
@@ -37,11 +38,11 @@ class UserAdapter() : BaseAdapter() {
         }
 
         override fun onClick(v: View?) {
-            TODO("Not yet implemented")
+
         }
 
         override fun onLongClick(v: View?): Boolean {
-            TODO("Not yet implemented")
+            return false
         }
     }
 
